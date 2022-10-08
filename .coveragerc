@@ -1,0 +1,11 @@
+[paths]
+source = revivelink_bypass
+
+[run]
+branch = true
+source = revivelink_bypass
+parallel = true
+
+[report]
+show_missing = true
+precision = 2
