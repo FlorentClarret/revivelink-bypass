@@ -20,9 +20,9 @@ def _generate_captcha_key() -> str:
     return "".join(random.choice(letters_and_digits) for _ in range(32))
 
 
-def _generate_sessionid() -> str:
+def _generate_sessionid(verify: bool = True) -> str:
     data = {"action": "qaptcha", "qaptcha_key": _generate_captcha_key()}
-    response = requests.post(CAPTCHA_URL, data=data)
+    response = requests.post(CAPTCHA_URL, data=data, verify=verify)
     return str(response.cookies["PHPSESSID"])
 
 
@@ -32,12 +32,13 @@ def _get_destination_url(url: str) -> str:
     return "/".join(splitted)
 
 
-def get_links(url: str) -> List[Link]:
+def get_links(url: str, verify: bool = True) -> List[Link]:
     response = requests.get(
         _get_destination_url(url),
         allow_redirects=True,
         timeout=20,
-        cookies={"PHPSESSID": _generate_sessionid()},
+        cookies={"PHPSESSID": _generate_sessionid(verify=verify)},
+        verify=verify,
     )
     response.raise_for_status()
 
